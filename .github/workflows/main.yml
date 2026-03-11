@@ -44,9 +44,9 @@ jobs:
           echo "准备循环运行 $COUNT 次注册流程..."
           if [ -n "$PROXY_URL" ]; then
             # 传入 --count 参数
-            python openai_register.py --count "$COUNT" --proxy "$PROXY_URL"
+            python register.py --count "$COUNT" --proxy "$PROXY_URL"
           else
-            python openai_register.py --count "$COUNT"
+            python register.py --count "$COUNT"
           fi
           
       - name: Upload to API and Cleanup
