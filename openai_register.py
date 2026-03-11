@@ -601,7 +601,11 @@ def main() -> None:
     parser.add_argument(
         "--proxy", default=None, help="代理地址，如 http://127.0.0.1:7890"
     )
-    parser.add_argument("--once", action="store_true", help="只运行一次")
+    # 原始代码
+    # parser.add_argument("--once", action="store_true", help="只运行一次")
+    
+    # 替换为：
+    parser.add_argument("--count", type=int, default=1, help="指定运行注册的次数 (0为无限次)")
     parser.add_argument("--sleep-min", type=int, default=5, help="循环模式最短等待秒数")
     parser.add_argument(
         "--sleep-max", type=int, default=30, help="循环模式最长等待秒数"
@@ -651,7 +655,13 @@ def main() -> None:
         except Exception as e:
             print(f"[Error] 发生未捕获异常: {e}")
 
-        if args.once:
+        # 原始代码
+        # if args.once:
+        #     break
+
+        # 替换为：
+        if args.count > 0 and count >= args.count:
+            print(f"[*] 已达到设定的执行次数 ({args.count})，任务结束。")
             break
 
         wait_time = random.randint(sleep_min, sleep_max)
@@ -661,3 +671,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
