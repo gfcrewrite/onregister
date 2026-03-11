@@ -1,0 +1,42 @@
+name: Auto OpenAI Registration
+
+on:
+  workflow_dispatch: # 允许你在 GitHub 网页端手动点击运行
+  schedule:
+    - cron: '0 0 * * *' # 每天 UTC 时间 00:00 自动运行一次（可根据需要修改）
+
+jobs:
+  run-registration:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 授予 GitHub Actions 推送代码的权限
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' # 使用稳定的 Python 版本
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Registration Script
+        # 使用 --once 参数确保在 GitHub Actions 环境中只运行一次，防止死循环耗尽配额
+        run: python openai_register.py --once
+
+      - name: Commit and Push generated JSON files
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # 将 Json 文件夹下的变更加入 Git
+          git add Json/
+          
+          # 如果有新文件则提交，否则跳过
+          git commit -m "Auto-add new generated token JSON" || echo "No new tokens generated"
+          git push
